@@ -1,24 +1,27 @@
-#include AdptArray.h
+#include "AdptArray.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 typedef struct AdptArray_
 {
     int ArrSize;
+
     PElement* pElemArr;
     DEL_FUNC delFunc;
     COPY_FUNC copyFunc;
+    PRINT_FUNC printFunc;
 }AdptArray, *PAdptArray;
 
 //creating an adapting array class without given array
-PAdptArray CreateAdptArray(COPY_FUNC copyfunc, DEL_FUNC delFunc,PRINT_FUNC printFunc){
+PAdptArray CreateAdptArray(COPY_FUNC copyfunc, DEL_FUNC delfunc,PRINT_FUNC printfunc){
     PAdptArray pArr = (PAdptArray)malloc(sizeof(AdptArray));
     if (pArr == NULL)
         return NULL;
     pArr->ArrSize = 0;
     pArr->pElemArr = NULL;
-    pArr->delFunc = delFunc_;
-    pArr->copyFunc = copyFunc_;
+    pArr->delFunc = delfunc;
+    pArr->copyFunc = copyfunc;
+    pArr->printFunc = printfunc;
     return pArr;
 }
 
