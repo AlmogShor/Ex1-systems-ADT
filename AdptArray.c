@@ -46,7 +46,7 @@ void DeleteAdptArray(PAdptArray pArray) {
 
     for (i = 0; i < pArray->ArrSize; i++) {
         if (pArray->pElemArr[i] != NULL)
-            free(pArray->pElemArr[i]);
+            pArray->delFunc((pArray->pElemArr)[i]);
     }
 
     free(pArray->pElemArr);
@@ -93,22 +93,24 @@ Result SetAdptArrayAt(PAdptArray pArray, int index, PElement element) {
 }
 
 
-
 /** getting an element from the adapting array
  *
  * @param pArray
  * @param index
  * @return
- */
+*/
+
 
 PElement GetAdptArrayAt(PAdptArray pArray, int index) {
     if (pArray == NULL || index < 0 || index >= pArray->ArrSize) {
         printf("Error: invalid input");
         return NULL;
     }
-    if (pArray->pElemArr[index] != NULL)
-        return pArray->pElemArr[index];
-    return NULL;
+    if (pArray->pElemArr[index] == NULL) {
+        return NULL;
+    }
+    PElement pElemArr = pArray->copyFunc(pArray->pElemArr[index]);
+    return pElemArr;
 }
 
 // getting the ArrSize of the adapting array
