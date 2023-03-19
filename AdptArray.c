@@ -32,7 +32,7 @@ void DeleteAdptArray(PAdptArray pArray) {
         return;
     }
     for (i = 0; i < pArray->ArrSize; i++) {
-        pArray->delFunc(pArray->array[i]);
+        pArray->delFunc((pArray->pElemArr)[i]);
     }
     free(pArray->array);
     free(pArray);
