@@ -1,20 +1,19 @@
 #include "AdptArray.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-typedef struct AdptArray_
-{
+typedef struct AdptArray_ {
     int ArrSize;
-
-    PElement* pElemArr;
+    PElement *pElemArr;
     DEL_FUNC delFunc;
     COPY_FUNC copyFunc;
     PRINT_FUNC printFunc;
-}AdptArray, *PAdptArray;
+} AdptArray, *PAdptArray;
 
 //creating an adapting array class without given array
-PAdptArray CreateAdptArray(COPY_FUNC copyfunc, DEL_FUNC delfunc,PRINT_FUNC printfunc){
-    PAdptArray pArr = (PAdptArray)malloc(sizeof(AdptArray));
+PAdptArray CreateAdptArray(COPY_FUNC copyfunc, DEL_FUNC delfunc, PRINT_FUNC printfunc) {
+    PAdptArray pArr = (PAdptArray) malloc(sizeof(AdptArray));
     if (pArr == NULL)
         return NULL;
     pArr->ArrSize = 0;
@@ -26,13 +25,13 @@ PAdptArray CreateAdptArray(COPY_FUNC copyfunc, DEL_FUNC delfunc,PRINT_FUNC print
 }
 
 // deleting an adapting array class
-void DeleteAdptArray(PAdptArray pArray){
+void DeleteAdptArray(PAdptArray pArray) {
     int i;
-    if(pArray == NULL){
+    if (pArray == NULL) {
         printf("Error: invalid input");
         return;
     }
-    for(i = 0; i < pArray->size; i++){
+    for (i = 0; i < pArray->ArrSize; i++) {
         pArray->delFunc(pArray->array[i]);
     }
     free(pArray->array);
@@ -40,63 +39,62 @@ void DeleteAdptArray(PAdptArray pArray){
 }
 
 // setting an element in the adapting array
-Result SetAdptArrayAt(PAdptArray pArray, int index, PElement element){
-    if(pArray == NULL || index < 0 || element == NULL){
-        printf("Error: invalid input");
+Result SetAdptArrayAt(PAdptArray pArray, int index, PElement element) {
+    PElement *newpElemArr;
+    if (pArray == NULL)
         return FAIL;
-    }
-    if(index >= pArray->size){
-        pArray->array = (PElement*)realloc(pArray->array, (index+1)*sizeof(PElement));
-        if(pArray->array == NULL){
-            printf("Error: memory allocation failed");
+
+    if (index >= pArray->ArrSize) {
+
+// Extend Array
+        if ((newpElemArr = (PElement *) calloc((index + 1), sizeof(PElement))) == NULL)
             return FAIL;
-        }
-        for(int i = pArray->size; i < index; i++){
-            pArray->array[i] = NULL;
-        }
-        pArray->array[index] = pArray->copyFunc(element);
-        pArray->size = index+1;
+        memcpy(newpElemArr, pArray->pElemArr, (pArray->ArrSize) * sizeof(PElement));
+        free(pArray->pElemArr);
+        pArray->pElemArr = newpElemArr;
     }
-    else{
-        pArray->delFunc(pArray->array[index]);
-        pArray->array[index] = pArray->copyFunc(element);
-    }
+
+    // Delete Previous Elem
+    pArray->delFunc((pArray->pElemArr)[index]);
+    (pArray->pElemArr)[index] = pArray->copyFunc(element);
+
+    // Update Array Size
+    pArray->ArrSize = (index >= pArray->ArrSize) ? (index + 1) : pArray->ArrSize;
     return SUCCESS;
 }
-
 // getting an element from the adapting array
 
-PElement GetAdptArrayAt(PAdptArray pArray, int index){
-    if(pArray == NULL || index < 0 || index >= pArray->size){
+PElement GetAdptArrayAt(PAdptArray pArray, int index) {
+    if (pArray == NULL || index < 0 || index >= pArray->ArrSize) {
         printf("Error: invalid input");
         return NULL;
     }
     return pArray->array[index];
 }
 
-// getting the size of the adapting array
-int GetAdptArraySize(PAdptArray pArray){
-    if(pArray == NULL){
+// getting the ArrSize of the adapting array
+int GetAdptArraySize(PAdptArray pArray) {
+    if (pArray == NULL) {
         printf("Error: invalid input");
         return -1;
     }
-    return pArray->size;
+    return pArray->ArrSize;
 }
 
 // printing the adapting array
 
-void PrintDB(PAdptArray pArray){
-    if(pArray == NULL){
+void PrintDB(PAdptArray pArray) {
+    if (pArray == NULL) {
         printf("Error: invalid input");
         return;
     }
-    for(int i = 0; i < pArray->size; i++){
-        pArray->printFunc(pArray->array[i]);
+    for (int i = 0; i < pArray->ArrSize; i++) {
+        pArray->printFunc(pArray->pElemArr[i]);
     }
 }
 
 //
 
-int main(){
+int main() {
 
 }
