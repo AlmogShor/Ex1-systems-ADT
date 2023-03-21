@@ -1,3 +1,5 @@
+// THis Solution is based on the answer from moed-a-sol in prev semster. its also based on my own reseach around the internet, specially stackOverFlow ect..
+
 #include "AdptArray.h"
 #include <stdio.h>
 #include <stdlib.h>
