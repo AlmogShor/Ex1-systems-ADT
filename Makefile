@@ -11,6 +11,12 @@ SOURCES=AdptArray.c book.c Person.c
 run: demo
 	./$^
 
+test: mowgliTestings
+	./$^
+
+mowgliTestings: mowgliTestings.o $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $^ -o mowgliTestings
+
 mem_test: demo
 	valgrind ./$^
 
